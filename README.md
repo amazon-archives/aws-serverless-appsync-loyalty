@@ -23,7 +23,7 @@ Unicorn Loyalty is a new startup that provides fantastic unicorns for customers.
 
 #### Optional
 
-* [AWS Cloud9](https://aws.amazon.com/cloud9/):  
+* [AWS Cloud9](https://aws.amazon.com/cloud9/) 
 We assume you are using Cloud9 to build this application. You can optionally choose to use any Text editor like Atom or VS Code.
 
 ### Initial Setup - Mobile CLI and Amplify
