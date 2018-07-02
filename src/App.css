@@ -1,0 +1,47 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+
+.center {
+  text-align: center;
+	margin: auto;
+}
+
+
+.container {
+	text-align: right;
+	margin: auto;
+	padding: 10px;
+	border-radius: 10px;
+  border: 1px solid black;
+}
+
+.img-thumbnail {
+    border-radius: 50%;
+    height:50px;
+}
+
+input {
+  width: 50px;
+}
+

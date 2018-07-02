@@ -1,0 +1,25 @@
+## Below example shows an example of a query against a table, indexed by the "name" attribute
+## The query returns any items in the index matching a certain "name", and then applies a
+##    filter to the results to match only the results with a certain "city" attribute
+## "expressionNames" is used as a placeholder or alias to the DynamoDB attribute, and is
+##    necessary for certain reserved attribute keywords like "name" or "owner"
+## "filter" : "expression" is the logical condition applied after the query runs, you can use:
+##   - NOT_NULL(), NULL(), CONTAINS(), NOT_CONTAINS()
+##    - This also works for attributes that are sets. For example, you can use "expression" : "contains(projects, :favfood)
+##      to check an attribute called "projects" of type String Set ("SS") for matches of a certain favorite food
+##   - BEGINS_WITH(), IN(), BETWEEN()
+##   - Comparators: >, <. >=, <= can be used for the "expression" key inside a filter
+##     - For example, "expression" : "#age > :age" would work on an attribute of type number
+## Read more: https://docs.aws.amazon.com/appsync/latest/devguide/resolver-mapping-template-reference-dynamodb.html#aws-appsync-resolver-mapping-template-reference-dynamodb-filter
+
+{
+    "version" : "2017-02-28",
+    "operation" : "Query",
+    "index" : "userId-index",
+    "query": {
+        "expression" : "userId = :userId",
+        "expressionValues" : {
+            ":userId" : { "S" : "${context.identity.sub}" }
+        }
+    }
+}

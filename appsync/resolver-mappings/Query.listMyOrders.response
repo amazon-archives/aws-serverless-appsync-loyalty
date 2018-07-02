@@ -1,0 +1,4 @@
+#**
+    Return a flat list of results from a Query or Scan operation.
+*#
+$util.toJson($ctx.result.items)

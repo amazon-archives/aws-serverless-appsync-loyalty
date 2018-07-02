@@ -1,0 +1,58 @@
+[
+    {
+        "typeName": "Mutation",
+        "fieldName": "addInventory",
+        "dataSourceName": "Items",
+        "requestMappingTemplate": "{managed-by-awsmobile-cli}:Mutation.addInventory.request",
+        "responseMappingTemplate": "{managed-by-awsmobile-cli}:Mutation.addInventory.response"
+    },
+    {
+        "typeName": "Mutation",
+        "fieldName": "createOrder",
+        "dataSourceName": "Orders",
+        "requestMappingTemplate": "{managed-by-awsmobile-cli}:Mutation.createOrder.request",
+        "responseMappingTemplate": "{managed-by-awsmobile-cli}:Mutation.createOrder.response"
+    },
+    {
+        "typeName": "Mutation",
+        "fieldName": "registerUser",
+        "dataSourceName": "Users",
+        "requestMappingTemplate": "{managed-by-awsmobile-cli}:Mutation.registerUser.request",
+        "responseMappingTemplate": "{managed-by-awsmobile-cli}:Mutation.registerUser.response"
+    },
+    {
+        "typeName": "Mutation",
+        "fieldName": "updateUserBalance",
+        "dataSourceName": "Users",
+        "requestMappingTemplate": "{managed-by-awsmobile-cli}:Mutation.updateUserBalance.request",
+        "responseMappingTemplate": "{managed-by-awsmobile-cli}:Mutation.updateUserBalance.response"
+    },
+    {
+        "typeName": "Query",
+        "fieldName": "getMe",
+        "dataSourceName": "Users",
+        "requestMappingTemplate": "{managed-by-awsmobile-cli}:Query.getMe.request",
+        "responseMappingTemplate": "{managed-by-awsmobile-cli}:Query.getMe.response"
+    },
+    {
+        "typeName": "Query",
+        "fieldName": "getOrder",
+        "dataSourceName": "Orders",
+        "requestMappingTemplate": "{managed-by-awsmobile-cli}:Query.getOrder.request",
+        "responseMappingTemplate": "{managed-by-awsmobile-cli}:Query.getOrder.response"
+    },
+    {
+        "typeName": "Query",
+        "fieldName": "listInventory",
+        "dataSourceName": "Items",
+        "requestMappingTemplate": "{managed-by-awsmobile-cli}:Query.listInventory.request",
+        "responseMappingTemplate": "{managed-by-awsmobile-cli}:Query.listInventory.response"
+    },
+    {
+        "typeName": "Query",
+        "fieldName": "listMyOrders",
+        "dataSourceName": "Orders",
+        "requestMappingTemplate": "{managed-by-awsmobile-cli}:Query.listMyOrders.request",
+        "responseMappingTemplate": "{managed-by-awsmobile-cli}:Query.listMyOrders.response"
+    }
+]

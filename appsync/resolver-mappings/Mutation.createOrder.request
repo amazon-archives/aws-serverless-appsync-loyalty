@@ -1,0 +1,21 @@
+## Below example shows how to create an object from all provided GraphQL arguments
+## The primary key of the obejct is a randomly generated UUD using the $util.autoId() utility
+## Other utilities include $util.matches() for regular expressions, $util.time.nowISO8601() or
+##   $util.time.nowEpochMilliSeconds() for timestamps, and even List or Map helpers like
+##   $util.list.copyAndRetainAll() $util.map.copyAndRemoveAllKeys() for shallow copies
+## Read more: https://docs.aws.amazon.com/appsync/latest/devguide/resolver-context-reference.html#utility-helpers-in-util
+
+{
+    "version" : "2017-02-28",
+    "operation" : "PutItem",
+    "key" : {
+        "orderId" : { "S" : "${context.arguments.orderId}" }
+    },
+    "attributeValues" : {
+        "itemId": {  "S": "${context.arguments.itemId}" },
+		"userId": {  "S": "${context.identity.sub}" },
+        "totalOrder": {  "N": "${context.arguments.totalOrder}" },
+        "date": {  "S": "$util.time.nowFormatted("dd-MM-yyyy")" },
+        "count": {  "S": "${context.arguments.count}" }
+    }
+}

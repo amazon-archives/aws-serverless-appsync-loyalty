@@ -1,0 +1,12 @@
+#**
+  The value of 'payload' after the template has been evaluated 
+  will be passed as the event to AWS Lambda.
+*#
+{
+    "version" : "2017-02-28",
+    "operation": "Invoke",
+    "payload": {
+        "field": "updateBalance",
+        "arguments":  $utils.toJson($context.args)
+    }
+}

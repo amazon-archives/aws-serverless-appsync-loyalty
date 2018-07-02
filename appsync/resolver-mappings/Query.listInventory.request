@@ -1,0 +1,15 @@
+## Below example will return all items in a table using a Scan
+## Filtering conditions can be optionally added to scans with a "filter" and an "expression", however
+##   if possible it is best practice to use a Query and/or Index for frequent conditionals
+## Read more: https://docs.aws.amazon.com/appsync/latest/devguide/resolver-mapping-template-reference-dynamodb.html#aws-appsync-resolver-mapping-template-reference-dynamodb-scan
+## You can also paginate through records in a table by using "nextToken" and "limit", which can be
+##   arguments passed from your GraphQL query in a client application (you can uncomment out below)
+## Read more: https://docs.aws.amazon.com/appsync/latest/devguide/configuring-resolvers.html#advanced-resolvers
+
+{
+    "version" : "2017-02-28",
+    "operation" : "Scan",
+    ## Add 'limit' and 'nextToken' arguments to this field in your schema to implement pagination. **
+    ## "limit": $util.defaultIfNull(${ctx.args.limit}, 20),
+    ## "nextToken": $util.toJson($util.defaultIfNullOrBlank($ctx.args.nextToken, null))
+}
