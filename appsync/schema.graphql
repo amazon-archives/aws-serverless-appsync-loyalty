@@ -16,7 +16,7 @@ type Item {
   itemDescription: String!
   price: Int!
   count: Int
- }
+}
 
 type ItemsConnection {
   items: [Item]
