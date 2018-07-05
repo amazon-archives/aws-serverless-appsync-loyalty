@@ -103,14 +103,14 @@ class App extends Component {
   
   orderData = (details,balance,total) => {
     let orderId = Math.random().toString(36).substring(2, 15).toUpperCase();
-    let orderDetails = {
-      orderId: orderId,
-      itemId: "",
-      unitPrice: "",
-      count: 0,
-      totalOrder:0
-    }
     details.forEach((item)=>{
+      let orderDetails = {
+        orderId: orderId,
+        itemId: "",
+        unitPrice: "",
+        count: 0,
+        totalOrder:0
+      };
       if (item.count !== null){
         orderDetails.itemId = item.itemId;
         orderDetails.count = item.count;
