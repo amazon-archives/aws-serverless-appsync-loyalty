@@ -195,7 +195,7 @@ It will automatically make the Unicorn Loyalty app available in a powerful and r
 
 ![Unicorn Loyalty Shop - Prod](img/13.png)
 
-You can get Analitycs about usage and revenue from Amazon Pinpoint, all thanks to a couple of lines of code required by the AWS Amplify Analytics component and the to the Pinpoint Project AWS Mobile CLI vreates by default:
+You can get Analitycs about usage and revenue from Amazon Pinpoint, all thanks to a couple of lines of code required by the AWS Amplify Analytics component and the to the Pinpoint Project AWS Mobile CLI creates by default:
 
 ```javascript
 Analytics.record({
