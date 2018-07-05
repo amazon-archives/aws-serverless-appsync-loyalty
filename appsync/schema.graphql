@@ -1,67 +1,58 @@
-type Item
-{
-itemId: ID!
-itemDescription: String!
-price: Int!
-count: Int
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
 }
 
-type ItemsConnection
-{
-items: [Item]
-nextToken: String
+type User {
+  userId: ID!
+  username: String
+  points: Int
+  orders(after: String,first: Int ): OrdersConnection
 }
 
-type Mutation
-{
-registerUser(userId: ID!,username: String! ): User
-addInventory(itemDescription: String!,price: Int! ): Item
-updateUserBalance(userId: ID!,username: String!,points: Int! ): User
-createOrder(orderId: ID!,itemId: ID!,date: String,count: Int,totalOrder: Int ): Order
+type Item {
+  itemId: ID!
+  itemDescription: String!
+  price: Int!
+  count: Int
+ }
+
+type ItemsConnection {
+  items: [Item]
+  nextToken: String
 }
 
-type Order
-{
-orderId: ID!
-itemId: ID!
-userId: ID
-date: String
-count: Int
-totalOrder: Int
+type Order {
+  orderId: ID!
+  itemId: ID!
+  userId: ID
+  date: String
+  count: Int
+  totalOrder: Int
 }
 
-type OrdersConnection
-{
-orders: [Order]
-nextToken: String
+type OrdersConnection {
+  orders: [Order]
+  nextToken: String
 }
 
-type Query
-{
-#  Get a single value of type 'Post' by primary key.
-getMe(userId: ID! ): User
-listInventory(after: String,first: Int ): ItemsConnection
-getOrder(orderId: ID! ): Order
-listMyOrders(after: String,first: Int ): OrdersConnection
+type Query {
+  getMe(userId: ID! ): User
+  listInventory(after: String,first: Int ): ItemsConnection
+  getOrder(orderId: ID! ): Order
+  listMyOrders(after: String,first: Int ): OrdersConnection
 }
 
-type Subscription
-{
-subscripeToPoints: User
-@aws_subscribe(mutations: ["updateUserBalance"])
+type Mutation {
+  registerUser(userId: ID!,username: String! ): User
+  addInventory(itemDescription: String!,price: Int! ): Item
+  updateUserBalance(userId: ID!,username: String!,points: Int! ): User
+  createOrder(orderId: ID!,itemId: ID!,date: String,count: Int,totalOrder: Int ): Order
 }
 
-type User
-{
-userId: ID!
-username: String
-points: Int
-orders(after: String,first: Int ): OrdersConnection
+type Subscription {
+  subscripeToPoints: User
+  @aws_subscribe(mutations: ["updateUserBalance"])
 }
 
-schema 
-{
-query: Query
-mutation: Mutation
-subscription: Subscription
-}
