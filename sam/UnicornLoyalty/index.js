@@ -5,7 +5,7 @@ let table = process.env.TABLE_NAME;
 exports.handler = (event, context, callback) => {
     console.log(event);
     let now = Date.now()/1000;
-    let expiry = new Date('2018.12.31').getTime() / 1000;
+    let expiry = new Date('2018.12.31').getTime() / 1000; //Modify the expiry date accordingly, by default the give away special expires the last day of 2018
     let getParams = {
         TableName:table,
         Key:{

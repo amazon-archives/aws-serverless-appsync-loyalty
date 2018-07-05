@@ -110,6 +110,12 @@ From Cloud9 select the AWS Resources tab on the right, you'll find a local Lambd
 
 ![Lambda SAM Config](img/06.png)
 
+By default the 1000 Unicoins give away special is valid until the last day of 2018. Edit the expiry date accordingly if you want to modify the deadline:
+
+```javascript
+let expiry = new Date('2018.12.31').getTime() / 1000; 
+```
+
 On the same menu click DEPLOY. The SAM Template will deploy a Lambda function and 3 DynamoDB tables. Lambda will interact directly with the Users table by detecting newly registered users to make sure they will only get the 1000 Unicoin Points special before the special expiry date. The other tables will be used directly by AppSync.
 
 ### AppSync Setup
