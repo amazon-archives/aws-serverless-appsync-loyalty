@@ -116,7 +116,7 @@ By default the 1000 Unicoins give away special is valid until the last day of 20
 let expiry = new Date('2018.12.31').getTime() / 1000; 
 ```
 
-On the same menu click DEPLOY. The SAM Template will deploy a Lambda function and 3 DynamoDB tables. Lambda will interact directly with the Users table by detecting newly registered users to make sure they will only get the 1000 Unicoin Points special before the special expiry date. The other tables will be used directly by AppSync.
+On the same menu click DEPLOY (or execute ```sam deploy/package``` with the SAM CLI it you're not on Cloud9). The SAM Template will deploy a Lambda function and 3 DynamoDB tables. Lambda will interact directly with the Users table by detecting newly registered users to make sure they will only get the 1000 Unicoin Points special before the special expiry date. The other tables will be used directly by AppSync.
 
 ### AppSync Setup
 
@@ -124,7 +124,7 @@ The Mobile CLI creates a sample Event API on AppSync by default. We wont use tha
 
 ![GraphQL Schema](img/07.png)
 
-Go to DATA SOURCES, delete the 2 tables from the sample. Now create 3 data sources as follows:
+Go to DATA SOURCES, delete the 2 tables from the sample. Now create 3 data sources as follows, pointing to the Items and Orders tables and the Lambda function created earlier :
 
 ![AppSync Data Sources](img/08.png)
 
