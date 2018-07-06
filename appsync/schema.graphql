@@ -1,58 +1,61 @@
-schema {
-  query: Query
-  mutation: Mutation
-  subscription: Subscription
-}
-
-type User {
-  userId: ID!
-  username: String
-  points: Int
-  orders(after: String,first: Int ): OrdersConnection
-}
-
-type Item {
-  itemId: ID!
-  itemDescription: String!
-  price: Int!
-  count: Int
-}
-
-type ItemsConnection {
-  items: [Item]
-  nextToken: String
-}
-
-type Order {
-  orderId: ID!
-  itemId: ID!
-  userId: ID
-  date: String
-  count: Int
-  totalOrder: Int
-}
-
-type OrdersConnection {
-  orders: [Order]
-  nextToken: String
+schema  {
+    query: Query
+    mutation: Mutation
+    subscription: Subscription
 }
 
 type Query {
-  getMe(userId: ID! ): User
-  listInventory(after: String,first: Int ): ItemsConnection
-  getOrder(orderId: ID! ): Order
-  listMyOrders(after: String,first: Int ): OrdersConnection
+    getMe(userId: ID! ): User
+    listInventory(after: String,first: Int ): ItemsConnection
+    getOrder(orderId: ID! ): [Order]
+    getMyOrders: [Order]
 }
 
 type Mutation {
-  registerUser(userId: ID!,username: String! ): User
-  addInventory(itemDescription: String!,price: Int! ): Item
-  updateUserBalance(userId: ID!,username: String!,points: Int! ): User
-  createOrder(orderId: ID!,itemId: ID!,date: String,count: Int,totalOrder: Int ): Order
+    registerUser(userId: ID!,username: String! ): User
+    addInventory(itemDescription: String!,price: Int! ): Item
+    updateUserBalance(userId: ID!,username: String!,points: Int! ): User
+    createOrder(orderId: ID!,itemId: ID!,date: String,count: Int,totalOrder: Int ): Order
 }
 
 type Subscription {
-  subscripeToPoints: User
-  @aws_subscribe(mutations: ["updateUserBalance"])
+    subscripeToPoints: User
+    @aws_subscribe(mutations: ["updateUserBalance"])
 }
+
+type User {
+    userId: ID!
+    username: String
+    points: Int
+    orders(after: String,first: Int ): OrdersConnection
+}
+
+type Item {
+    itemId: ID!
+    itemDescription: String!
+    price: Int!
+    count: Int
+}
+
+type ItemsConnection {
+    items: [Item]
+    nextToken: String
+}
+
+type Order {
+    orderId: ID!
+    itemId: ID!
+    userId: ID
+    date: String
+    count: Int
+    totalOrder: Int
+}
+
+type OrdersConnection {
+    orders: [Order]
+    nextToken: String
+}
+
+
+
 

@@ -218,6 +218,40 @@ Analytics.record('_monetization.purchase', {
 * Revenue Data:
 ![Unicorn Analytics](img/12.png)
 
+## Feel like a challenge? What's next?
+
+We added the backend logic to get all orders from the current user:
+
+```graphql
+query {
+  getMyOrders{
+    orderId
+    itemId
+    count
+    date
+    totalOrder
+  }
+}
+```
+
+And to get the items in a specific order by querying the Order ID:
+
+```graphql
+query {
+  getOrder(orderId:"<Order ID Here>"){
+    orderId
+    itemId
+    count
+    date
+    totalOrder
+  }
+}
+```
+
+Using AWS Amplify implement a new feature to the Unicorn Loyalty app so users can get information on all the orders they placed as well as Unicorns that were purchased in a previous order.
+
+Go Build with Serverless GraphQL!
+
 ## License Summary
 
 This sample code is made available under a modified MIT license. See the LICENSE file.

@@ -36,6 +36,13 @@
     },
     {
         "typeName": "Query",
+        "fieldName": "getMyOrders",
+        "dataSourceName": "Orders",
+        "requestMappingTemplate": "{managed-by-awsmobile-cli}:Query.getMyOrders.request",
+        "responseMappingTemplate": "{managed-by-awsmobile-cli}:Query.getMyOrders.response"
+    },
+    {
+        "typeName": "Query",
         "fieldName": "getOrder",
         "dataSourceName": "Orders",
         "requestMappingTemplate": "{managed-by-awsmobile-cli}:Query.getOrder.request",
@@ -49,10 +56,10 @@
         "responseMappingTemplate": "{managed-by-awsmobile-cli}:Query.listInventory.response"
     },
     {
-        "typeName": "Query",
-        "fieldName": "listMyOrders",
+        "typeName": "User",
+        "fieldName": "orders",
         "dataSourceName": "Orders",
-        "requestMappingTemplate": "{managed-by-awsmobile-cli}:Query.listMyOrders.request",
-        "responseMappingTemplate": "{managed-by-awsmobile-cli}:Query.listMyOrders.response"
+        "requestMappingTemplate": "{managed-by-awsmobile-cli}:User.orders.request",
+        "responseMappingTemplate": "{managed-by-awsmobile-cli}:User.orders.response"
     }
 ]

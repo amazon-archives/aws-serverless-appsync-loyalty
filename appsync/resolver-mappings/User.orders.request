@@ -13,14 +13,12 @@
     "version" : "2017-02-28",
     "operation" : "Scan",
     "filter" : {
-        "expression": "#userId = :userId AND #orderId = :orderId",
+        "expression": "#userId = :userId",
         "expressionNames": {
-          "#userId": "userId",
-          "#orderId": "orderId"
+          "#userId": "userId"
         },
         "expressionValues" : {
-          ":userId" : {"S": "$ctx.identity.sub"},
-          ":orderId" : $util.dynamodb.toDynamoDBJson($ctx.args.orderId)
+          ":userId" :  { "S":"${context.identity.sub}"}
         }
     }
 }
