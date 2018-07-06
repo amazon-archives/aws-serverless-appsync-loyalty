@@ -1,29 +1,34 @@
 import React, { Component } from 'react';
+//Styling
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
+//Components
 import Unicorns from "./components/Unicorns";
 import Points from "./components/Points";
 import Order from "./components/Order";
+//Amplify
 import Amplify,{Auth,Analytics,API,graphqlOperation} from 'aws-amplify';
 import { withAuthenticator } from 'aws-amplify-react';
 import aws_exports from './aws-exports'; // specify the location of aws-exports.js file on your project
 Amplify.configure(aws_exports);
 
+//GraphQL Mutations
 const registerUser = `mutation registerUser($userId: ID!, $username: String!) {
-        registerUser(userId: $userId, username: $username) {
-          __typename
-          userId
-          username
-          points
-        }
-      }`;
-      
+  registerUser(userId: $userId, username: $username) {
+    __typename
+    userId
+    username
+    points
+  }
+}`;
+    
 const updateUserBalance = `mutation updateUserBalance($userId: ID!, $username: String!, $points: Int!) {
-        updateUserBalance(userId: $userId, username: $username, points: $points) {
-          __typename
-          points
-        }
-      }`;
+  updateUserBalance(userId: $userId, username: $username, points: $points) {
+    __typename
+    points
+  }
+}`;
+
 const createOrder = `mutation createOrder($orderId:ID!,$itemId:ID!,$totalOrder:Int,$count:Int){
   createOrder(orderId:$orderId,itemId:$itemId,totalOrder:$totalOrder,count:$count){
     orderId
@@ -33,6 +38,7 @@ const createOrder = `mutation createOrder($orderId:ID!,$itemId:ID!,$totalOrder:I
     date
   }
 }`
+
 
 class App extends Component {
 
@@ -48,11 +54,13 @@ class App extends Component {
   }
   
   async componentDidMount(){
+    //Get User Details from Cognito Token
     this.session = await Auth.currentSession();
     console.log('Decoded Acess Token:');
     console.log(JSON.stringify(this.session.accessToken.payload, null, 2));
     this.setState({user: this.session.accessToken.payload.username});
     this.setState({sub: this.session.accessToken.payload.sub});
+    //Query the current User ID
     const getUser = await API.graphql(graphqlOperation(
     `query getMe{
       getMe(userId: "`+this.state.sub+`"){
@@ -62,16 +70,19 @@ class App extends Component {
         points
       }
     }`));
+    //Retrieve current points balance
     this.setState({points: getUser.data.getMe.points});
     this.userDetails = {
         userId: this.state.sub,
         username: this.state.user,
         points: this.state.points
     };
+    //If the User ID doesn't exist, proceed to register
     if (getUser.data.getMe.userId ===""){
       const newUser = await API.graphql(graphqlOperation(registerUser, this.userDetails));
       this.userDetails.points = newUser.data.registerUser.points;
     }
+    //Update the balance, this will trigger the Subscription
     this.updateBalance(this.userDetails.points);
   }
   
@@ -81,28 +92,11 @@ class App extends Component {
     console.log(lastPoints);
   }
   
-  async createOrder(order){
-    console.log(order);
-    const putOrder = await API.graphql(graphqlOperation(createOrder, order));
-    console.log(JSON.stringify(putOrder));
-    this.setState({order: putOrder.data.createOrder});
-    this.setState({display: true});
-    Analytics.record({
-      name: 'unicornsPurchase', 
-      attributes: {}, 
-      metrics: { totalOrder: order.totalOrder }
-    });
-    Analytics.record('_monetization.purchase', {
-        _currency: 'USD',
-        _product_id: order.itemId,
-      }, {
-        _item_price: order.unitPrice,
-        _quantity: order.count,
-      })
-  }
-  
+  //Retrieve Order data from Unicorns component
   orderData = (details,balance,total) => {
+    //Generate Order ID
     let orderId = Math.random().toString(36).substring(2, 15).toUpperCase();
+    //Loop through order items
     details.forEach((item)=>{
       let orderDetails = {
         orderId: orderId,
@@ -116,10 +110,34 @@ class App extends Component {
         orderDetails.count = item.count;
         orderDetails.unitPrice = item.price;
         orderDetails.totalOrder = total;
+        //Clean up and add items to Order
         this.createOrder(orderDetails);
       }
     })
+    //Update balance after purchase
     this.updateBalance(balance);
+  }
+  
+  async createOrder(order){
+    //Place the order
+    console.log(order);
+    const putOrder = await API.graphql(graphqlOperation(createOrder, order));
+    console.log(JSON.stringify(putOrder));
+    this.setState({order: putOrder.data.createOrder});
+    this.setState({display: true}); //display Order component after a successfull purchase
+    //Send Analytics data to Pinpoint
+    Analytics.record({
+      name: 'unicornsPurchase', 
+      attributes: {}, 
+      metrics: { totalOrder: order.totalOrder }
+    });
+    Analytics.record('_monetization.purchase', {
+        _currency: 'USD',
+        _product_id: order.itemId,
+      }, {
+        _item_price: order.unitPrice,
+        _quantity: order.count,
+      })
   }
   
   render() {

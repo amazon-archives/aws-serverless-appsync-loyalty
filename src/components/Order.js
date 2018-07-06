@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import unicorn from '../images/unicorn.png';
-import Amplify,{API,graphqlOperation} from 'aws-amplify';
-import aws_exports from '../aws-exports'; // specify the location of aws-exports.js file on your project
-Amplify.configure(aws_exports);
 
 class Order extends Component {
 
@@ -13,6 +10,7 @@ class Order extends Component {
     };
   }
   
+  //Receive order data from App component
   componentWillReceiveProps(props) {
     this.setState({order: props.order});
   }
@@ -35,7 +33,7 @@ class Order extends Component {
         <div className="col-sm-2"></div>
           <div className="container col-sm-8">
             <div className='center'>
-            <img src={unicorn} />
+            <img src={unicorn} alt="Unicorn"/>
               <p>
                 <h4>Order Placed!</h4>
                 <small> Unicorns are on the way </small>

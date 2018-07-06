@@ -4,6 +4,7 @@ import Amplify,{API,graphqlOperation} from 'aws-amplify';
 import aws_exports from '../aws-exports'; // specify the location of aws-exports.js file on your project
 Amplify.configure(aws_exports);
 
+//GraphQL
 const subscripeToPoints = `subscription subscripeToPoints {
           subscripeToPoints {
             __typename
@@ -20,11 +21,13 @@ class Points extends Component {
     };
   }
   
+  //Set points from App Component
   componentWillReceiveProps(props) {
     this.setState({points: props.points});
   }
   
   render() {
+    //Create subscription for real-time points balance update
     const subscription = API.graphql(graphqlOperation(subscripeToPoints)).subscribe({
         next: (event) => {
             console.log(event.value.data);
