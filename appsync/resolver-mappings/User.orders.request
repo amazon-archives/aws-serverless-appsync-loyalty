@@ -18,7 +18,7 @@
           "#userId": "userId"
         },
         "expressionValues" : {
-          ":userId" :  { "S":"${context.identity.sub}"}
+          ":userId" :  { "S":"${context.source.userId}"}
         }
     }
 }

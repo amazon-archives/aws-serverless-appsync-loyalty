@@ -1,4 +1,4 @@
-schema  {
+schema {
     query: Query
     mutation: Mutation
     subscription: Subscription
@@ -10,6 +10,7 @@ type Query {
     getOrder(orderId: ID! ): [Order]
     getMyOrders: [Order]
 }
+
 
 type Mutation {
     registerUser(userId: ID!,username: String! ): User
@@ -27,7 +28,7 @@ type User {
     userId: ID!
     username: String
     points: Int
-    orders(after: String,first: Int ): OrdersConnection
+    orders: [Order]
 }
 
 type Item {
@@ -55,6 +56,7 @@ type OrdersConnection {
     orders: [Order]
     nextToken: String
 }
+
 
 
 

@@ -234,7 +234,19 @@ query {
 }
 ```
 
-And to get the items in a specific order by querying the Order ID:
+Alternatively, you can get the same result using the relation between the User type and the Order type by querying the User ID:
+
+```graphql
+query me{
+  getMe(userId:"<User ID Here>"){
+    orders{
+        orderId
+    }
+  }
+}
+```
+
+We also added the backend logic to get the items in a specific order by querying the Order ID:
 
 ```graphql
 query {
