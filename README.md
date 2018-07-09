@@ -237,7 +237,7 @@ query {
 Alternatively, you can get the same result using the relation between the User type and the Order type by querying the User ID:
 
 ```graphql
-query me{
+query {
   getMe(userId:"<User ID Here>"){
     orders{
         orderId
