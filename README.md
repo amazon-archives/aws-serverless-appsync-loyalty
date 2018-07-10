@@ -132,7 +132,7 @@ Back to Cloud9, execute the following command to retrieve the AppSync changes:
 
     $ awsmobile pull
 
-Go to the folder ```awsmobilejs/backend/appsync``` and delete the file ```resolvers.json``` and the folder "resolver-mappings".
+Go to the folder ```awsmobilejs/backend/appsync``` and delete the file ```resolvers.json``` and the folder ```resolver-mappings```.
 
 Go to the folder ```appsync``` in the root of the application directory and copy the file "resolvers.json" and the folder ```resolver-mappings``` to the previous folder ```awsmobilejs/backend/appsync```, replacing the deleted files.
 
