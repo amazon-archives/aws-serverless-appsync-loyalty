@@ -20,7 +20,7 @@ type Mutation {
 }
 
 type Subscription {
-    subscripeToPoints: User
+    subscribeToPoints: User
     @aws_subscribe(mutations: ["updateUserBalance"])
 }
 

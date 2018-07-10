@@ -106,7 +106,7 @@ Download all files from the Github repo. Upload them to your Cloud9 workspace (F
 
 ### Lambda Setup
 
-From Cloud9 select the AWS Resources tab on the right, you'll find a local Lambda funcion under the "sam" folder called "UnicornLoyalty". Right click and select EDIT CONFIG to check the related SAM template and EDIT FUNCTION to check the Lambda code:
+From Cloud9 select the AWS Resources tab on the right, you'll find a local Lambda funcion under the ```sam``` folder called ```UnicornLoyalty```. Right click and select EDIT CONFIG to check the related SAM template and EDIT FUNCTION to check the Lambda code:
 
 ![Lambda SAM Config](img/06.png)
 
@@ -116,7 +116,7 @@ By default the 1000 Unicoins give away special is valid until the last day of 20
 let expiry = new Date('2018.12.31').getTime() / 1000; 
 ```
 
-On the same menu click DEPLOY (or execute ```sam deploy/package``` with the SAM CLI it you're not on Cloud9). The SAM Template will deploy a Lambda function and 3 DynamoDB tables. Lambda will interact directly with the Users table by detecting newly registered users to make sure they will only get the 1000 Unicoin Points special before the special expiry date. The other tables will be used directly by AppSync.
+On the same menu click DEPLOY (or execute ```sam package/deploy``` with the SAM CLI it you're not on Cloud9). The SAM Template will deploy a Lambda function and 3 DynamoDB tables. Lambda will interact directly with the Users table by detecting newly registered users to make sure they will only get the 1000 Unicoin Points special before the special expiry date. The other tables will be used directly by AppSync.
 
 ### AppSync Setup
 
@@ -132,9 +132,9 @@ Back to Cloud9, execute the following command to retrieve the AppSync changes:
 
     $ awsmobile pull
 
-Go to the folder "awsmobilejs/backend/appsync" and delete the file "resolvers.json" and the folder "resolver-mappings".
+Go to the folder ```awsmobilejs/backend/appsync``` and delete the file ```resolvers.json``` and the folder "resolver-mappings".
 
-Go to the folder "appsync" in the root of the application directory and copy the file "resolvers.json" and the folder "resolver-mappings" to the previous folder "awsmobilejs/backend/appsync", replacing the deleted files.
+Go to the folder ```appsync``` in the root of the application directory and copy the file "resolvers.json" and the folder ```resolver-mappings``` to the previous folder ```awsmobilejs/backend/appsync```, replacing the deleted files.
 
 Next step is to configure AppSync authentication. Execute the following command and select the options:
 
@@ -182,6 +182,7 @@ Back to Cloud9 execute:
 
     $ awsmobile run
 
+(In case of errors or missing packages, you might need to run ```npm install``` and try again)
 
 Then click on PREVIEW -> PREVIEW RUNNING APPLICATION to access the Unicorn Loyalty App:
 

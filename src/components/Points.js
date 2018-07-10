@@ -5,8 +5,8 @@ import aws_exports from '../aws-exports'; // specify the location of aws-exports
 Amplify.configure(aws_exports);
 
 //GraphQL
-const subscripeToPoints = `subscription subscripeToPoints {
-          subscripeToPoints {
+const subscribeToPoints = `subscription subscribeToPoints {
+          subscribeToPoints {
             __typename
             points
           }
@@ -28,10 +28,10 @@ class Points extends Component {
   
   render() {
     //Create subscription for real-time points balance update
-    const subscription = API.graphql(graphqlOperation(subscripeToPoints)).subscribe({
+    const subscription = API.graphql(graphqlOperation(subscribeToPoints)).subscribe({
         next: (event) => {
-            console.log(event.value.data);
-            this.setState({points: event.value.data.subscripeToPoints.points});
+            console.log("Subscription: "+event.value.data);
+            this.setState({points: event.value.data.subscribeToPoints.points});
         }
     });
     return (
