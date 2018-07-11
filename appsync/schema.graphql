@@ -7,10 +7,9 @@ schema {
 type Query {
     getMe(userId: ID! ): User
     listInventory(after: String,first: Int ): ItemsConnection
-    getOrder(orderId: ID! ): [Order]
-    getMyOrders: [Order]
+    getOrder(orderId: ID! ): OrdersConnection
+    getMyOrders(after: String,first: Int ): OrdersConnection
 }
-
 
 type Mutation {
     registerUser(userId: ID!,username: String! ): User
@@ -53,7 +52,7 @@ type Order {
 }
 
 type OrdersConnection {
-    orders: [Order]
+    items: [Order]
     nextToken: String
 }
 

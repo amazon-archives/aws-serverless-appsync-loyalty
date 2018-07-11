@@ -9,5 +9,7 @@
         "expressionValues" : {
           ":userId" : {"S": "$ctx.identity.sub"}
         }
-    }
+    },
+    "limit": $util.defaultIfNull($ctx.args.first, 20),
+  	"nextToken": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.after, null))
 }

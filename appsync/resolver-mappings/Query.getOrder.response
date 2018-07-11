@@ -1,4 +1,2 @@
-#**
-    Return a flat list of results from a Query or Scan operation.
-*#
-$util.toJson($ctx.result.items)
+## Pass back the result from DynamoDB. **
+$util.toJson($ctx.result)
