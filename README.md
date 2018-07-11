@@ -261,7 +261,7 @@ query {
 }
 ```
 
-Using AWS Amplify implement a new feature to the Unicorn Loyalty app so users can get information on all the orders they placed as well as Unicorns that were purchased in a previous order.
+Using AWS Amplify implement a new feature to the Unicorn Loyalty app so users can get information on all the orders they placed as well as Unicorns that were purchased in a previous order. Bonus points if implemented with the built-in pagination support.
 
 Go Build with Serverless GraphQL!
 
