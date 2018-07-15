@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 //Styling
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
+import shadowfax from './images/shadowfax.png';
 //Components
 import Unicorns from "./components/Unicorns";
 import Points from "./components/Points";
@@ -144,6 +145,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
+          <img className="logo" src={shadowfax} alt="Unicorn Logo"/>
           <h1 className="App-title">Welcome to Unicorn Loyalty</h1>
           <small>Powered by Serverless GraphQL</small>
         </header>
