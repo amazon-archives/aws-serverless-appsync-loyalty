@@ -144,9 +144,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img className="logo" src={shadowfax} alt="Unicorn Logo"/>
-          <h1 className="App-title">Welcome to Unicorn Loyalty</h1>
+        <header className="App-header py-1">
+          <img className="logo" src={shadowfax} alt="Shadowfax"/><br/>
+          <strong className="App-title p-0">Welcome to Unicorn Loyalty</strong><br/>
           <small>Powered by Serverless GraphQL</small>
         </header>
         <p className="App-intro alert alert-dark">
