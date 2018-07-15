@@ -66,6 +66,7 @@ To test if everything is working, open App.js and let's add 4 extra lines of cod
 
 ```javascript
 import React, { Component } from 'react';
+import logo from './logo.svg';
 import './App.css';
 import Amplify from 'aws-amplify';
 import { withAuthenticator } from 'aws-amplify-react';
