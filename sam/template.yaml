@@ -37,9 +37,6 @@ Resources:
         -
           AttributeName: "itemId"
           AttributeType: "S"
-        -
-          AttributeName: "userId"
-          AttributeType: "S"
       KeySchema:
         -
           AttributeName: "orderId"
@@ -50,15 +47,3 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: "5"
         WriteCapacityUnits: "5"
-      GlobalSecondaryIndexes:
-        -
-          IndexName: "userId-index"
-          KeySchema:
-            -
-              AttributeName: "userId"
-              KeyType: "HASH"
-          Projection:
-            ProjectionType: "ALL"
-          ProvisionedThroughput:
-            ReadCapacityUnits: "5"
-            WriteCapacityUnits: "5"
