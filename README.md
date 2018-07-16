@@ -117,7 +117,7 @@ By default the 1000 Unicoins give away special is valid until the last day of 20
 let expiry = new Date('2018.12.31').getTime() / 1000; 
 ```
 
-On the same menu click DEPLOY (or execute ```sam package/deploy``` with the SAM CLI it you're not on Cloud9). The SAM Template will deploy a Lambda function and 3 DynamoDB tables. Lambda will interact directly with the Users table by detecting newly registered users to make sure they will only get the 1000 Unicoin Points special before the special expiry date as well as manage and update the user unicoins/points balance when a order is placed. The other tables will be used directly by AppSync.
+On the same menu click DEPLOY (or execute ```sam package/deploy``` with the SAM CLI it you're not on Cloud9). The SAM Template will deploy a Lambda function and 3 DynamoDB tables. Lambda will interact directly with the Users table by detecting newly registered users to make sure they will only get the 1000 Unicoin Points special before the expiry date as well as manage and update the user unicoins/points balance when a order is placed. The other tables will be used directly by AppSync.
 
 ### AppSync Setup
 
