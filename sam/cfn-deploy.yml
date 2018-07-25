@@ -1,0 +1,497 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: GraphQL Serverless e-Commerce Sample
+Parameters:
+  userPoolId:
+    Type: String
+    Description: User Pool ID associated with this project
+Outputs:
+  UnicornApiId:
+    Description: Unique AWS AppSync GraphQL API Identifier
+    Value: !GetAtt unicornApi.ApiId
+  UnicornApiUrl:
+    Description: The Endpoint URL of your GraphQL API.
+    Value: !GetAtt unicornApi.GraphQLUrl
+Resources:
+  UnicornFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Code:  
+        ZipFile: !Sub |
+          let AWS = require('aws-sdk');
+          let dynamo = new AWS.DynamoDB.DocumentClient();
+          let table = process.env.TABLE_NAME;
+
+          exports.handler = (event, context, callback) => {
+              let now = Date.now()/1000;
+              let expiry = new Date('2018.12.31').getTime()/1000;
+              let getParams = {
+                  TableName: table,
+                  Key:{
+                      "userId": event.arguments.userId
+                  }
+              };
+              let putParams = {
+                  TableName:table,
+                  Item:{
+                      "userId": event.arguments.userId,
+                      "username": event.arguments.username,
+                      "points": 1000
+                  }
+              };
+              if (expiry < now){
+                  putParams.Item.points = 0;
+              }
+              switch(event.field){
+                  case "getUser":
+                      dynamo.get(getParams, function(err,data){
+                          if (err){
+                              console.error("Error JSON: ", JSON.stringify(err,null,2));
+                              callback(err);
+                          } else if (data.Item == undefined) {
+                              let result = {
+                                  "userId": "",
+                                  "username": "",
+                                  "points": 1000
+                              };
+                              callback(null,result);
+                          } else {
+                              console.log("User Exists: ", JSON.stringify(data,null,2));
+                              let result = {
+                                  "userId": data.Item.userId,
+                                  "username": data.Item.username,
+                                  "points": data.Item.points
+                              };
+                              callback(null,result);
+                          }
+                      });
+                      break;
+                  case "registerUser":
+                      dynamo.put(putParams, function(err,data){
+                          if (err){
+                              console.error("Error JSON: ", JSON.stringify(err,null,2));
+                              callback(err);    
+                          } else {
+                              console.log("User Added: ", JSON.stringify(data,null,2));
+                              let result = putParams.Item;
+                              callback(null,result);
+                          }
+                      });
+                      break;
+                  case "updateBalance":
+                      putParams.Item.points = event.arguments.points;
+                      dynamo.put(putParams, function(err,data){
+                          if (err){
+                              console.error("Error JSON: ", JSON.stringify(err,null,2));
+                              callback(err);    
+                          } else {
+                              console.log("Balance Updated: ", JSON.stringify(data,null,2));
+                              let result = {
+                                  "userId": event.arguments.userId,
+                                  "username": event.arguments.username,
+                                  "points": event.arguments.points
+                              }
+                              callback(null,result);
+                          }
+                      });
+                      break;
+                  default:
+                      callback("Unknown field, unable to resolve" + event.field, null);
+                      break;
+              }
+          };
+      MemorySize: 128
+      Timeout: 15
+      Role: !GetAtt lambdaRole.Arn
+      Environment: 
+        Variables: 
+          TABLE_NAME: 
+            Ref: UsersTable
+  UsersTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: "userId"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "userId"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+  ItemsTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: "itemId"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "itemId"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+  OrdersTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: "orderId"
+          AttributeType: "S"
+        -
+          AttributeName: "itemId"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "orderId"
+          KeyType: "HASH"
+        -
+          AttributeName: "itemId"
+          KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+  awsAppSyncServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "appsync.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+  lambdaRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:*
+            Resource: arn:aws:logs:*:*:*
+  dynamodbAccessPolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: "dynamodb-access"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action: "dynamodb:*"
+            Resource:
+              - !GetAtt ItemsTable.Arn
+              - !GetAtt OrdersTable.Arn
+              - !GetAtt UsersTable.Arn
+      Roles:
+        -
+          Ref: "awsAppSyncServiceRole"
+        -
+          Ref: "lambdaRole"
+  lambdaAccessPolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: "lambda-access"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action: "lambda:invokeFunction"
+            Resource:
+              - !GetAtt [ UnicornFunction, Arn ]
+              - !Join [ '', [ !GetAtt [ UnicornFunction, Arn ], ':*' ] ]
+      Roles:
+        -
+          Ref: "awsAppSyncServiceRole"
+  unicornApi:
+    Type: "AWS::AppSync::GraphQLApi"
+    Properties:
+      Name: "UnicornLoyalty"
+      AuthenticationType: "AMAZON_COGNITO_USER_POOLS"
+      UserPoolConfig:
+        UserPoolId: !Ref userPoolId
+        AwsRegion: !Ref "AWS::Region"
+        DefaultAction: "ALLOW"
+  usersDataSource:
+    Type: "AWS::AppSync::DataSource"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      Name: "Users"
+      Description: "Users Lambda Data Source"
+      Type: "AWS_LAMBDA"
+      ServiceRoleArn: !GetAtt awsAppSyncServiceRole.Arn
+      LambdaConfig:
+        LambdaFunctionArn: !GetAtt [ UnicornFunction, Arn ]
+  itemsDataSource:
+    Type: "AWS::AppSync::DataSource"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      Name: "Items"
+      Description: "Items DynamoDB Data Source"
+      Type: "AMAZON_DYNAMODB"
+      ServiceRoleArn: !GetAtt awsAppSyncServiceRole.Arn
+      DynamoDBConfig:
+        TableName: !Ref ItemsTable
+        AwsRegion: !Ref "AWS::Region"
+  ordersDataSource:
+    Type: "AWS::AppSync::DataSource"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      Name: "Orders"
+      Description: "Orders DynamoDB Data Source"
+      Type: "AMAZON_DYNAMODB"
+      ServiceRoleArn: !GetAtt awsAppSyncServiceRole.Arn
+      DynamoDBConfig:
+        TableName: !Ref OrdersTable
+        AwsRegion: !Ref "AWS::Region"
+  unicornSchema:
+    Type: "AWS::AppSync::GraphQLSchema"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      Definition: |
+        schema {
+            query: Query
+            mutation: Mutation
+            subscription: Subscription
+        }
+
+        type Query {
+            getMe(userId: ID! ): User
+            listInventory(after: String,first: Int ): ItemsConnection
+            getOrder(orderId: ID! ): OrdersConnection
+            getMyOrders(after: String,first: Int ): OrdersConnection
+        }
+
+        type Mutation {
+            registerUser(userId: ID!,username: String! ): User
+            addInventory(itemDescription: String!,price: Int! ): Item
+            updateUserBalance(userId: ID!,username: String!,points: Int! ): User
+            createOrder(orderId: ID!,itemId: ID!,date: String,count: Int,totalOrder: Int ): Order
+        }
+
+        type Subscription {
+            subscribeToPoints: User
+            @aws_subscribe(mutations: ["updateUserBalance"])
+        }
+
+        type User {
+            userId: ID!
+            username: String
+            points: Int
+            orders: [Order]
+        }
+
+        type Item {
+            itemId: ID!
+            itemDescription: String!
+            price: Int!
+            count: Int
+        }
+
+        type ItemsConnection {
+            items: [Item]
+            nextToken: String
+        }
+
+        type Order {
+            orderId: ID!
+            itemId: ID!
+            userId: ID
+            date: String
+            count: Int
+            totalOrder: Int
+        }
+
+        type OrdersConnection {
+            items: [Order]
+            nextToken: String
+        }
+  getMeQueryResolver:
+    Type: "AWS::AppSync::Resolver"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      TypeName: "Query"
+      FieldName: "getMe"
+      DataSourceName: !GetAtt usersDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation": "Invoke",
+          "payload": {
+              "field": "getUser",
+              "arguments":  $utils.toJson($context.args)
+          }
+        }
+      ResponseMappingTemplate: |
+        $utils.toJson($context.result)
+  listInventoryQueryResolver:
+    Type: "AWS::AppSync::Resolver"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      TypeName: "Query"
+      FieldName: "listInventory"
+      DataSourceName: !GetAtt itemsDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation" : "Scan",
+          "limit": $util.defaultIfNull($ctx.args.first, 20),
+          "nextToken": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.after, null))
+        }
+      ResponseMappingTemplate: |
+        $utils.toJson($context.result)
+  getOrderQueryResolver:
+    Type: "AWS::AppSync::Resolver"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      TypeName: "Query"
+      FieldName: "getOrder"
+      DataSourceName: !GetAtt ordersDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation" : "Scan",
+          "filter" : {
+              "expression": "#userId = :userId AND #orderId = :orderId",
+              "expressionNames": {
+                "#userId": "userId",
+                "#orderId": "orderId"
+              },
+              "expressionValues" : {
+                ":userId" : {"S": "$ctx.identity.sub"},
+                ":orderId" : $util.dynamodb.toDynamoDBJson($ctx.args.orderId)
+              }
+          }
+        }
+      ResponseMappingTemplate: |
+        $utils.toJson($context.result)
+  getMyOrdersQueryResolver:
+    Type: "AWS::AppSync::Resolver"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      TypeName: "Query"
+      FieldName: "getMyOrders"
+      DataSourceName: !GetAtt ordersDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation" : "Scan",
+          "filter" : {
+              "expression": "#userId = :userId",
+              "expressionNames": {
+                "#userId": "userId"
+              },
+              "expressionValues" : {
+                ":userId" : {"S": "$ctx.identity.sub"}
+              }
+          },
+          "limit": $util.defaultIfNull($ctx.args.first, 20),
+          "nextToken": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.after, null))
+        }
+      ResponseMappingTemplate: |
+        $utils.toJson($context.result)
+  registerUserMutationResolver:
+    Type: "AWS::AppSync::Resolver"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      TypeName: "Mutation"
+      FieldName: "registerUser"
+      DataSourceName: !GetAtt usersDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation": "Invoke",
+          "payload": {
+              "field": "registerUser",
+              "arguments":  $utils.toJson($context.args)
+          }
+        }
+      ResponseMappingTemplate: |
+        $utils.toJson($context.result)
+  addInventoryMutationResolver:
+    Type: "AWS::AppSync::Resolver"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      TypeName: "Mutation"
+      FieldName: "addInventory"
+      DataSourceName: !GetAtt itemsDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation" : "PutItem",
+          "key" : {
+              ## If object "id" should come from GraphQL arguments, change to $util.dynamodb.toDynamoDBJson($ctx.args.id)
+              "itemId": $util.dynamodb.toDynamoDBJson($util.autoId()),
+          },
+          "attributeValues" : $util.dynamodb.toMapValuesJson($ctx.args)
+        }
+      ResponseMappingTemplate: |
+        $utils.toJson($context.result)
+  updateUserBalanceMutationResolver:
+    Type: "AWS::AppSync::Resolver"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      TypeName: "Mutation"
+      FieldName: "updateUserBalance"
+      DataSourceName: !GetAtt usersDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation": "Invoke",
+          "payload": {
+              "field": "updateBalance",
+              "arguments":  $utils.toJson($context.args)
+          }
+        }
+      ResponseMappingTemplate: |
+        $utils.toJson($context.result)
+  createOrderMutationResolver:
+    Type: "AWS::AppSync::Resolver"
+    Properties:
+      ApiId: !GetAtt unicornApi.ApiId
+      TypeName: "Mutation"
+      FieldName: "createOrder"
+      DataSourceName: !GetAtt ordersDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation" : "PutItem",
+          "key" : {
+              "orderId" : { "S" : "${context.arguments.orderId}" }
+          },
+          "attributeValues" : {
+              "itemId": {  "S": "${context.arguments.itemId}" },
+          "userId": {  "S": "${context.identity.sub}" },
+              "totalOrder": {  "N": "${context.arguments.totalOrder}" },
+              "date": {  "S": "$util.time.nowFormatted("dd-MM-yyyy")" },
+              "count": {  "S": "${context.arguments.count}" }
+          }
+        }
+      ResponseMappingTemplate: |
+        $utils.toJson($context.result)
+  

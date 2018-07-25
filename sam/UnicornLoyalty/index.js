@@ -53,7 +53,7 @@ exports.handler = (event, context, callback) => {
                     callback(err);    
                 } else {
                     console.log("User Added: ", JSON.stringify(data,null,2));
-                    let result = putParams;
+                    let result = putParams.Item;
                     callback(null,result);
                 }
             });
