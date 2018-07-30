@@ -11,7 +11,6 @@ const subscribeToPoints = `subscription subscribeToPoints {
             points
           }
         }`;
-const subscription="";
 
 class Points extends Component {
 
