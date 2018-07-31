@@ -21,8 +21,14 @@ class Points extends Component {
     };
   }
 
-  componentDidUpdate(){
-    this.subscription.unsubscribe();
+  async componentDidMount(){
+    //Create subscription for real-time points balance update
+    this.subscription = API.graphql(graphqlOperation(subscribeToPoints)).subscribe({
+      next: (event) => {
+          console.log("Subscription: "+event.value.data);
+          this.setState({points: event.value.data.subscribeToPoints.points});
+      }
+    });
   }
   
   //Set points from App Component
@@ -31,13 +37,6 @@ class Points extends Component {
   }
   
   render() {
-    this.subscription = API.graphql(graphqlOperation(subscribeToPoints)).subscribe({
-      next: (event) => {
-          console.log("Subscription: "+event.value.data);
-          this.setState({points: event.value.data.subscribeToPoints.points});
-      }
-    });
-    //Create subscription for real-time points balance update
     return (
       <div className="Points bg-light card p-2">
         <h6><strong>Balance: {this.state.points} Unicoins</strong></h6>
