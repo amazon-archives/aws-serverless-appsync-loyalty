@@ -2,7 +2,7 @@
 
 Unicorn Loyalty is a new startup that provides fantastic unicorns for customers. The business just started and it's giving away 1000 Unicoin Points for new customers to purchase the unicorns available on inventory.
 
-(Live Coding setup and video available on https://www.youtube.com/watch?v=WOQIqRVzkas)
+(Live Coding video covering Lambda and AppSync manual setup available on https://www.youtube.com/watch?v=WOQIqRVzkas)
 
 ### Behind the Scenes
 
