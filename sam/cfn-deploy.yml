@@ -16,7 +16,7 @@ Resources:
     Type: 'AWS::Lambda::Function'
     Properties:
       Handler: index.handler
-      Runtime: nodejs6.10
+      Runtime: nodejs10.x
       Code:  
         ZipFile: !Sub |
           let AWS = require('aws-sdk');
