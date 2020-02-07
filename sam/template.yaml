@@ -6,7 +6,7 @@ Resources:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: UnicornLoyalty/index.handler
-      Runtime: nodejs8.10
+      Runtime: nodejs10.x
       Description: ''
       MemorySize: 128
       Timeout: 15
